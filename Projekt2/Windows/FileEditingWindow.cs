@@ -84,6 +84,8 @@ namespace Projekt2.Windows
 
 		private void UpdateFileWalues()
         {
+			TargetString = null;
+			SourceString = null;
 			_pathBoxJSON.Value = PathString;
             _pathBoxSources.Value = UpdateFilePaths(Job.Sources, true);
 			_pathBoxTargets.Value = UpdateFilePaths(Job.Targets, false);
@@ -99,6 +101,7 @@ namespace Projekt2.Windows
 
 		private void _safeButton_Clicked()
 		{
+			UpdateFileWaluesV2();
 			Writer.Write(PathString, Job);
 			MessageBox.Show("Saved succesfuly");
 			Console.Clear();
@@ -118,6 +121,8 @@ namespace Projekt2.Windows
 			Error = _whatsWrongBox.Value;
 			_pathBoxSources.Value = null;
 			_pathBoxTargets.Value = null;
+
+			Console.Clear();
 
 			UpdateFileWalues();
 		}
@@ -155,6 +160,7 @@ namespace Projekt2.Windows
 
         private string UpdateFilePaths(List<string> paths, bool isSource)
         {
+			Console.Clear();
 			foreach (string fp in paths)
 			{
 				if (isSource)
