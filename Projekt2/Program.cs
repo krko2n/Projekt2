@@ -1,6 +1,7 @@
 ﻿using Projekt2.Presentation.Windows;
 using Projekt2.Windows;
 
+//https://github.com/krko2n/Projekt2
 namespace Projekt2
 {
     internal class Program
