@@ -29,11 +29,16 @@ namespace Projekt2.Windows
 		private Projekt2.Presentation.Components.TextBox _whatsWrongBox;
 
 
+        public BackupJob Job { get; set; } = new BackupJob();
+        public string PathString { get; set; }
+        public string SourceString { get; set; }
+        public string TargetString { get; set; }
+        public string Error = "none";
 
-		public FileEditingWindow(string title, Application application, IWindow? returnWindow = null, FileInfo? file = null)
+
+        public FileEditingWindow(string title, Application application, IWindow? returnWindow = null, FileInfo? file = null)
             : base("JSON Editor", application, returnWindow)
         {
-
             _pathBoxJSON = new Projekt2.Presentation.Components.TextBox("JSON editing file:\t",32);
 			_pathBoxSources = new Projekt2.Presentation.Components.TextBox("Source file:\t", 32);
 			_pathBoxTargets = new Projekt2.Presentation.Components.TextBox("Target file:\t", 32);
@@ -63,6 +68,8 @@ namespace Projekt2.Windows
             RegisterComponent(_selectJSON);
             RegisterComponent(_exitButton);
 
+			UpdateFileWalues();
+
 
 			_safeButton.Clicked += _safeButton_Clicked;
 			_correctButton.Clicked += CheckButtonClicked;
@@ -72,11 +79,6 @@ namespace Projekt2.Windows
         }
 
 
-		public BackupJob Job { get; set; }
-        public string PathString { get; set; }
-        public string SourceString { get; set; }
-        public string TargetString { get; set; }
-		public string Error = "none";
 
 
 
@@ -84,11 +86,12 @@ namespace Projekt2.Windows
 
 		private void UpdateFileWalues()
         {
-			TargetString = null;
-			SourceString = null;
+
+            TargetString = string.Empty;
+			SourceString = string.Empty;
 			_pathBoxJSON.Value = PathString;
-            _pathBoxSources.Value = UpdateFilePaths(Job.Sources, true);
-			_pathBoxTargets.Value = UpdateFilePaths(Job.Targets, false);
+            _pathBoxSources.Value = UpdateFilePaths(Job.Sources, true, false).TrimEnd();
+			_pathBoxTargets.Value = UpdateFilePaths(Job.Targets, false, false).TrimEnd();
             _methodBox.Value = Job.BackupMethod.ToString();
 			_timingBox.Value = Job.Timing;
             _retentionSizeBox.Value = Job.Retention.Size.ToString();
@@ -111,6 +114,7 @@ namespace Projekt2.Windows
 
 		private void UpdateFileWaluesV2()
 		{
+
 			PathString = _pathBoxJSON.Value;
 			Job.Sources = ParseFilePaths(_pathBoxSources.Value);
 			Job.Targets = ParseFilePaths(_pathBoxTargets.Value);
@@ -119,8 +123,8 @@ namespace Projekt2.Windows
 			Job.Retention.Size = Convert.ToInt32(_retentionSizeBox.Value);
 			Job.Retention.Count = Convert.ToInt32(_retentionCountBox.Value);
 			Error = _whatsWrongBox.Value;
-			_pathBoxSources.Value = null;
-			_pathBoxTargets.Value = null;
+			_pathBoxSources.Value = string.Empty;
+			_pathBoxTargets.Value = string.Empty;
 
 			Console.Clear();
 
@@ -158,8 +162,11 @@ namespace Projekt2.Windows
 
 		}
 
-        private string UpdateFilePaths(List<string> paths, bool isSource)
+        private string UpdateFilePaths(List<string> paths, bool isSource,bool skip)
         {
+			if (skip)
+				return string.Empty;
+
 			Console.Clear();
 			foreach (string fp in paths)
 			{

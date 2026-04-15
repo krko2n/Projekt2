@@ -1,4 +1,5 @@
 ﻿using Projekt2.Helpers;
+using System.Windows.Forms;
 
 namespace Projekt2.Presentation.Components
 {
@@ -6,7 +7,7 @@ namespace Projekt2.Presentation.Components
     {
         public override bool Selectable => true;
 
-        public string Value { get; set; }
+        public string Value { get; set; } = "";
 
         private string _text;
         private int _size;
@@ -21,8 +22,11 @@ namespace Projekt2.Presentation.Components
 
         public override void Render(bool selected)
         {
+
+
             char pad = selected ? '_' : ' ';
-            string content = Value.PadRight(_size, pad);
+            string content = (Value ?? "").PadRight(_size, pad);
+
 
             ConsoleHelper.WriteConditionalColor($"{_text}{content}", selected, ConsoleColor.Red);
 
@@ -31,11 +35,22 @@ namespace Projekt2.Presentation.Components
 
         public override void HandleKey(ConsoleKeyInfo keyInfo)
         {
-            if (keyInfo.Key == ConsoleKey.Backspace && Value.Length > 0)
+			Value ??= "";
+
+			if (keyInfo.Key == ConsoleKey.Backspace && Value.Length > 0)
             {
                 Value = Value.Substring(0, Value.Length - 1);
             }
-            else if (!char.IsControl(keyInfo.KeyChar) && Value.Length < _size)
+            else if (keyInfo.Modifiers.HasFlag(ConsoleModifiers.Control))
+            {
+				if (keyInfo.Key == ConsoleKey.V)
+				{
+					string pasted = Clipboard.GetText();
+                    Value += pasted;
+				}
+
+			}
+			else if (!char.IsControl(keyInfo.KeyChar) && Value.Length < _size)
             {
                 Value += keyInfo.KeyChar;
             }

@@ -10,10 +10,12 @@ namespace Projekt2.Retention
 	public class BackupRetention
 	{
 		[JsonPropertyName("count")]
-        public int Count {get; set;}
+        public int Count {get; set;} = 5;
 
 		[JsonPropertyName("size")]
-		public int Size {get; set;}
+		public int Size { get; set; } = 10;
+
+		public BackupRetention() { }
 
 		public BackupRetention(int count, int size)
 		{
