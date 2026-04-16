@@ -21,7 +21,7 @@ namespace Projekt2.JSON_R_W
 			};
 
 			string json = JsonSerializer.Serialize(job, options);
-			if ((new Regex(@"[.json]")).IsMatch(filePath.ToLower()))
+			if (!(new Regex(@"[.json]")).IsMatch(filePath.ToLower()))
 				filePath = $"{filePath}\\newJSON.JSON";
 			if (!File.Exists(filePath))
 			{
